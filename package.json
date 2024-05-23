@@ -15,7 +15,8 @@
     "express-handlebars": "^6.0.6",
     "express-session": "^1.17.3",
     "postgres": "*",
-    "sequelize": "^6.6.5"
+    "sequelize": "^6.6.5",
+    "pg": "^8.7.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.7"
