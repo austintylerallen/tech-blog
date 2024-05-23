@@ -1,0 +1,20 @@
+<h1 class="text-center">Welcome to the Tech Blog</h1>
+{{#if logged_in}}
+    <a href="/dashboard" class="btn btn-primary">Dashboard</a>
+    <button class="btn btn-secondary" id="logout">Logout</button>
+{{else}}
+    <a href="/login" class="btn btn-primary">Login</a>
+    <a href="/signup" class="btn btn-secondary">Signup</a>
+{{/if}}
+
+<div class="mt-4">
+    {{#each posts}}
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 class="card-title">{{this.title}}</h2>
+                <p class="card-text">{{this.content}}</p>
+                <footer class="blockquote-footer">Posted by: {{this.user.username}}</footer>
+            </div>
+        </div>
+    {{/each}}
+</div>
