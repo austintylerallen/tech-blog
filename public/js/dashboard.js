@@ -15,5 +15,7 @@ const deletePostHandler = async (event) => {
     }
   };
   
-  document.querySelector('.container').addEventListener('click', deletePostHandler);
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelector('.container').addEventListener('click', deletePostHandler);
+  });
   

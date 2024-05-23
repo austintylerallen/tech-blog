@@ -1,11 +1,13 @@
 <h1 class="text-center">Welcome to the Tech Blog</h1>
-{{#if logged_in}}
-    <a href="/dashboard" class="btn btn-primary">Dashboard</a>
-    <button class="btn btn-secondary" id="logout">Logout</button>
-{{else}}
-    <a href="/login" class="btn btn-primary">Login</a>
-    <a href="/signup" class="btn btn-secondary">Signup</a>
-{{/if}}
+<div class="text-center mb-4">
+    {{#if logged_in}}
+        <a href="/dashboard" class="btn btn-primary">Dashboard</a>
+        <button class="btn btn-secondary" id="logout">Logout</button>
+    {{else}}
+        <a href="/login" class="btn btn-primary">Login</a>
+        <a href="/signup" class="btn btn-secondary">Signup</a>
+    {{/if}}
+</div>
 
 <div class="mt-4">
     {{#each posts}}
