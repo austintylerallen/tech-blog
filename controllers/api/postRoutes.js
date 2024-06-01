@@ -1,60 +1,35 @@
-const router = require('express').Router();
-const { Post } = require('../../models');
-const withAuth = require('../../utils/auth');
+// const express = require('express');
+// const router = express.Router();
 
-// Create a new post
-router.post('/', withAuth, async (req, res) => {
-  try {
-    const newPost = await Post.create({
-      ...req.body,
-      user_id: req.session.user_id,
-    });
-    res.status(200).json(newPost);
-  } catch (err) {
-    res.status(400).json(err);
-  }
-});
+// // Import the controller functions for handling posts and comments
+// const { createPost, getAllPosts, createComment, getAllComments } = require('../postController');
 
-// Update an existing post
-router.put('/:id', withAuth, async (req, res) => {
-  try {
-    const postData = await Post.update(req.body, {
-      where: {
-        id: req.params.id,
-        user_id: req.session.user_id,
-      },
-    });
+// // Define API endpoints for posts
+// router.post('/posts', createPost); // Create a new post
+// router.get('/posts', getAllPosts); // Retrieve all posts
 
-    if (!postData) {
-      res.status(404).json({ message: 'No post found with this id!' });
-      return;
-    }
+// // Define API endpoints for comments
+// router.post('/posts/:postId/comments', createComment); // Create a new comment for a post
+// router.get('/posts/:postId/comments', getAllComments); // Retrieve all comments for a post
 
-    res.status(200).json(postData);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
+// module.exports = router;
 
-// Delete a post
-router.delete('/:id', withAuth, async (req, res) => {
-  try {
-    const postData = await Post.destroy({
-      where: {
-        id: req.params.id,
-        user_id: req.session.user_id,
-      },
-    });
 
-    if (!postData) {
-      res.status(404).json({ message: 'No post found with this id!' });
-      return;
-    }
+// controllers/api/postRoutes.js
+// controllers/api/postRoutes.js
+// controllers/api/postRoutes.js
+const express = require('express');
+const router = express.Router();
+const { createPost, getAllPosts, updatePost, deletePost, getPostById } = require('../postController');
 
-    res.status(200).json(postData);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
+// Define API endpoints for posts
+router.post('/', createPost); // Create a new post
+router.get('/', getAllPosts); // Retrieve all posts
+router.get('/:postId', getPostById); // Retrieve a single post by ID
+router.put('/:postId', updatePost); // Update a post
+router.delete('/:postId', deletePost); // Delete a post
 
 module.exports = router;
+
+
+

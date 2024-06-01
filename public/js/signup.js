@@ -1,48 +1,31 @@
-// const signupFormHandler = async (event) => {
-//   event.preventDefault();
-
-//   const username = document.querySelector('input[name="username"]').value.trim();
-//   const password = document.querySelector('input[name="password"]').value.trim();
-
-//   if (username && password) {
-//     const response = await fetch('/api/users/signup', {
-//       method: 'POST',
-//       body: JSON.stringify({ username, password }),
-//       headers: { 'Content-Type': 'application/json' },
-//     });
-
-//     if (response.ok) {
-//       document.location.replace('/');
-//     } else {
-//       alert('Failed to sign up');
-//     }
-//   }
-// };
-
-// document.querySelector('#signup-form').addEventListener('submit', signupFormHandler);
-
-
-const signupForm = document.querySelector('#signup-form');
-
-if (signupForm) {
-  signupForm.addEventListener('submit', async (event) => {
+document.addEventListener('DOMContentLoaded', () => {
+  const signupFormHandler = async (event) => {
     event.preventDefault();
 
-    const username = document.querySelector('input[name="username"]').value.trim();
-    const password = document.querySelector('input[name="password"]').value.trim();
+    const email = document.querySelector('#email').value.trim();
+    const password = document.querySelector('#password').value.trim();
 
-    if (username && password) {
-      const response = await fetch('/api/users/signup', {
+    if (email && password) {
+      const response = await fetch('/signup', {
         method: 'POST',
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ email, password }),
         headers: { 'Content-Type': 'application/json' },
       });
 
       if (response.ok) {
-        document.location.replace('/');
+        document.location.replace('/dashboard');
       } else {
-        alert('Failed to sign up');
+        const errorText = await response.text(); // Get the response text for debugging
+        console.error('Signup error:', errorText);
+        alert('Failed to sign up. Please try again.');
       }
+    } else {
+      alert('Please fill out all fields.');
     }
-  });
-}
+  };
+
+  const signupForm = document.querySelector('.signup-form');
+  if (signupForm) {
+    signupForm.addEventListener('submit', signupFormHandler);
+  }
+});

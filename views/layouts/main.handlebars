@@ -3,49 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tech Blog</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/style.css">
+    <title>{{pageTitle}}</title>
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="/">Tech Blog</a>
-        <div class="collapse navbar-collapse">
+        <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
-                {{#if logged_in}}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/dashboard">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <button class="btn btn-link nav-link" id="logout">Logout</button>
-                    </li>
-                {{else}}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/signup">Signup</a>
-                    </li>
-                {{/if}}
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/signup">Sign Up</a>
+                </li>
             </ul>
         </div>
     </nav>
-    <div class="container mt-4">
-        {{{body}}}
-    </div>
-    <footer class="bg-dark text-white p-3 mt-5">
-        <div class="container text-center">
-            <p>&copy; 2024 Tech Blog. All Rights Reserved.</p>
-        </div>
-    </footer>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+
+    {{{body}}}
+
+
+    <!-- Bootstrap JS (Optional, if needed) -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="/js/login.js"></script>
-    <script src="/js/logout.js"></script>
-    <script src="/js/signup.js"></script>
-    <script src="/js/dashboard.js"></script>
-    <script src="/js/new-post.js"></script>
-    <script src="/js/edit-post.js"></script>
 </body>
 </html>

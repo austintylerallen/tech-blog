@@ -1,10 +1,23 @@
-<h1>New Post</h1>
-<form id="new-post-form">
-    <div class="form-group">
-        <input type="text" name="title" class="form-control" placeholder="Title" required>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Blog - New Post</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    {{> header}}
+
+    <div class="container mt-5">
+        <h1>New Post</h1>
+        <!-- Your create post form here -->
     </div>
-    <div class="form-group">
-        <textarea name="content" class="form-control" placeholder="Content" required></textarea>
-    </div>
-    <button type="submit" class="btn btn-primary">Create</button>
-</form>
+
+    {{> footer}}
+
+    <!-- Bootstrap JS (Optional, if needed) -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

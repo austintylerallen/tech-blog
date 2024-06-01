@@ -4,78 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{post.title}}</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/style.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="/">Tech Blog</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ml-auto">
-                {{#if logged_in}}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/dashboard">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <button class="btn btn-link nav-link" id="logout">Logout</button>
-                    </li>
-                {{else}}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/signup">Signup</a>
-                    </li>
-                {{/if}}
-            </ul>
-        </div>
-    </nav>
-    <div class="container mt-4">
-        <div class="card mb-4">
-            <div class="card-body">
-                <h1 class="card-title">{{post.title}}</h1>
-                <p class="card-text">{{post.content}}</p>
-                <footer class="blockquote-footer">Posted by: {{post.user.username}} on {{post.createdAt}}</footer>
-            </div>
-        </div>
+    <div class="container mt-5">
+        <h2>{{post.title}}</h2>
+        <p>{{post.content}}</p>
+        <p><small class="text-muted">Posted by {{post.email}} on {{format_date post.createdAt}}</small></p>
 
-        <h3>Comments</h3>
-        <div id="comment-section">
-            {{#each comments}}
-                <div class="comment card mb-2">
-                    <div class="card-body">
-                        <p class="card-text">{{this.comment_text}}</p>
-                        <footer class="blockquote-footer">Commented by: {{this.user.username}} on {{this.createdAt}}</footer>
-                    </div>
-                </div>
+        <h3 class="mt-4">Comments</h3>
+        <ul class="list-group">
+            {{#each post.comments}}
+            <li class="list-group-item">
+                <p>{{this.comment_text}}</p>
+                <small>Commented by {{this.email}} on {{format_date this.createdAt}}</small>
+            </li>
+            {{else}}
+            <li class="list-group-item">No comments yet.</li>
             {{/each}}
-        </div>
+        </ul>
 
         {{#if logged_in}}
-        <form id="new-comment-form">
+        <form id="comment-form" class="mt-4" action="/api/posts/{{post.id}}/comments" method="POST">
             <div class="form-group">
-                <textarea name="comment" class="form-control" placeholder="Add a comment" required></textarea>
+                <textarea name="comment_text" class="form-control" placeholder="Add a comment"></textarea>
             </div>
+            <input type="hidden" name="post_id" value="{{post.id}}">
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
         {{else}}
-        <p>You need to <a href="/login">log in</a> to comment.</p>
+        <p><a href="/login">Log in</a> to add a comment.</p>
         {{/if}}
     </div>
-    <footer class="bg-dark text-white p-3 mt-5">
-        <div class="container text-center">
-            <p>&copy; 2024 Tech Blog. All Rights Reserved.</p>
-        </div>
-    </footer>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+
+    <!-- Bootstrap JS (Optional, if needed) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="/js/login.js"></script>
-    <script src="/js/logout.js"></script>
-    <script src="/js/signup.js"></script>
-    <script src="/js/dashboard.js"></script>
-    <script src="/js/new-post.js"></script>
-    <script src="/js/edit-post.js"></script>
-    <script src="/js/comments.js"></script>
 </body>
 </html>

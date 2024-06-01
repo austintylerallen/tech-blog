@@ -21,29 +21,4 @@ router.get('/', withAuth, async (req, res) => {
   }
 });
 
-router.get('/new', withAuth, (req, res) => {
-  res.render('new-post', {
-    logged_in: req.session.logged_in,
-  });
-});
-
-router.get('/edit/:id', withAuth, async (req, res) => {
-  try {
-    const postData = await Post.findByPk(req.params.id);
-
-    if (postData) {
-      const post = postData.get({ plain: true });
-
-      res.render('edit-post', {
-        post,
-        logged_in: req.session.logged_in,
-      });
-    } else {
-      res.status(404).end();
-    }
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
-
 module.exports = router;

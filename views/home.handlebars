@@ -1,22 +1,26 @@
-<h1 class="text-center">Welcome to the Tech Blog</h1>
-<div class="text-center mb-4">
-    {{#if logged_in}}
-        <a href="/dashboard" class="btn btn-primary">Dashboard</a>
-        <button class="btn btn-secondary" id="logout">Logout</button>
-    {{else}}
-        <a href="/login" class="btn btn-primary">Login</a>
-        <a href="/signup" class="btn btn-secondary">Signup</a>
-    {{/if}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Blog - Home</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-5">
+    <h1>Welcome to the Home Page!</h1>
+    <!-- Your home page content here -->
 </div>
 
-<div class="mt-4">
-    {{#each posts}}
-        <div class="card mb-4">
-            <div class="card-body">
-                <h2 class="card-title">{{this.title}}</h2>
-                <p class="card-text">{{this.content}}</p>
-                <footer class="blockquote-footer">Posted by: {{this.user.username}}</footer>
-            </div>
-        </div>
-    {{/each}}
-</div>
+<footer class="footer mt-auto py-3">
+    <div class="container">
+        <span class="text-muted">Tech Blog &copy; 2024</span>
+    </div>
+</footer>
+
+<!-- Bootstrap JS (Optional, if needed) -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
