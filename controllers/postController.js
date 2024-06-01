@@ -1,5 +1,5 @@
 const db = require('../db/db');
-const { Post } = require('../models');
+const { Post, Comment } = require('../models');
 
 // Controller function to create a new post
 exports.createPost = async (req, res) => {
@@ -7,7 +7,7 @@ exports.createPost = async (req, res) => {
     const userId = req.session.user_id;
 
     if (!title || !content || !userId) {
-        return res.status(400).json({ error: 'Title, content, and userId are required' });
+        return res.status(400).json({ error: 'Title, content, and user ID are required' });
     }
 
     try {
@@ -22,7 +22,9 @@ exports.createPost = async (req, res) => {
 // Controller function to retrieve all posts
 exports.getAllPosts = async (req, res) => {
     try {
-        const posts = await Post.findAll();
+        const posts = await Post.findAll({
+            include: [Comment]
+        });
         res.json(posts);
     } catch (error) {
         console.error('Error getting posts:', error);
@@ -34,7 +36,9 @@ exports.getAllPosts = async (req, res) => {
 exports.getPostById = async (req, res) => {
     const { postId } = req.params;
     try {
-        const post = await Post.findByPk(postId);
+        const post = await Post.findByPk(postId, {
+            include: [Comment]
+        });
         if (!post) {
             return res.status(404).json({ error: 'Post not found' });
         }
@@ -81,6 +85,40 @@ exports.deletePost = async (req, res) => {
         res.status(204).send();
     } catch (error) {
         console.error('Error deleting post:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+// Controller function to create a new comment for a post
+exports.createComment = async (req, res) => {
+    const { comment_text } = req.body;
+    const userId = req.session.user_id;
+    const postId = req.params.postId;
+
+    if (!comment_text || !userId) {
+        return res.status(400).json({ error: 'Content and user ID are required' });
+    }
+
+    try {
+        const newComment = await Comment.create({ comment_text, user_id: userId, post_id: postId });
+        res.status(201).json(newComment);
+    } catch (error) {
+        console.error('Error creating comment:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+// Controller function to retrieve all comments for a post
+exports.getAllComments = async (req, res) => {
+    const postId = req.params.postId;
+
+    try {
+        const comments = await Comment.findAll({ where: { post_id: postId } });
+        res.json(comments);
+    } catch (error) {
+        console.error('Error getting comments:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };

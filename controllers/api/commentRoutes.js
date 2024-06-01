@@ -1,9 +1,7 @@
-// controllers/api/commentRoutes.js
-const express = require('express');
-const router = express.Router();
-const { createComment, getAllCommentsForPost } = require('../../controllers/commentController');
+const router = require('express').Router();
+const { createComment, getAllComments } = require('../postController');
 
 router.post('/', createComment); // Create a new comment
-router.get('/:postId', getAllCommentsForPost); // Retrieve all comments for a post
+router.get('/:postId', getAllComments); // Retrieve all comments for a post
 
 module.exports = router;

@@ -1,47 +1,50 @@
-
-
-
-// authRoutes.js
 const express = require('express');
 const router = express.Router();
-const db = require('../db/db');
+const { User } = require('../models');
 const bcrypt = require('bcrypt');
 
-// Login route
 router.post('/login', async (req, res) => {
-    const { email, password } = req.body;
-
-    try {
-        const user = await db.query('SELECT * FROM users WHERE email = $1', [email]);
-        
-        if (user.rows.length > 0 && bcrypt.compareSync(password, user.rows[0].password)) {
-            req.session.user_id = user.rows[0].id;  // Store userId in session
-            req.session.email = user.rows[0].email;
-            res.redirect('/dashboard');
-        } else {
-            res.status(401).json({ error: 'Invalid email or password' });
-        }
-    } catch (error) {
-        console.error('Error logging in:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+  const { email, password } = req.body;
+  try {
+    console.log('Login attempt:', email); // Add this line for debugging
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      console.log('User not found'); // Add this line for debugging
+      return res.status(401).json({ error: 'Invalid email or password' });
     }
+
+    const validPassword = await user.checkPassword(password);
+    if (!validPassword) {
+      console.log('Invalid password'); // Add this line for debugging
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
+
+    req.session.user_id = user.id;
+    req.session.email = user.email;
+    res.redirect('/dashboard');
+  } catch (err) {
+    console.error('Error during login:', err);
+    res.status(500).json(err);
+  }
 });
 
-// Route to handle logout and redirect to the home page
-router.get('/logout', (req, res) => {
-    // If you are using session, destroy the session
-    if (req.session) {
-      req.session.destroy((err) => {
-        if (err) {
-          console.error('Failed to destroy session during logout:', err);
-          return res.status(500).send('Failed to log out.');
-        }
-        res.redirect('/'); // Redirect to the home page
-      });
+router.post('/signup', async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      res.render('signup', { error: 'Email already exists. Please use a different email.' });
     } else {
-      res.redirect('/'); // If no session, just redirect to home
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const user = await User.create({ email, password: hashedPassword });
+      req.session.user_id = user.id;
+      req.session.email = user.email;
+      res.redirect('/dashboard');
     }
-  });
-  
+  } catch (err) {
+    console.error('Error during signup:', err);
+    res.status(500).json(err);
+  }
+});
 
 module.exports = router;

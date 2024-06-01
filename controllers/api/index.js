@@ -23,22 +23,20 @@
 const express = require('express');
 const router = express.Router();
 
-// Import your API routes
 const postRoutes = require('./postRoutes');
 const commentRoutes = require('./commentRoutes');
 const userRoutes = require('./userRoutes');
 
-// Define your API routes here
 router.use('/posts', postRoutes); // Routes for handling posts
 router.use('/comments', commentRoutes); // Routes for handling comments
 router.use('/users', userRoutes); // Routes for handling users
 
-// Example route to test API functionality
 router.get('/test', (req, res) => {
   res.send('API route is working!');
 });
 
 module.exports = router;
+
 
 
 

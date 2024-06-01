@@ -31,7 +31,7 @@ Comment.init(
   },
   {
     sequelize,
-    timestamps: false,
+    timestamps: true, // Ensure timestamps are enabled
     freezeTableName: true,
     underscored: true,
     modelName: 'comment'

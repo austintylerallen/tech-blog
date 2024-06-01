@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { User, Post } = require('../models');
+const { User, Post, Comment } = require('../models');
 const bcrypt = require('bcrypt');
 const { Op } = require('sequelize');
 
@@ -15,12 +15,14 @@ router.get('/dashboard', async (req, res) => {
   try {
     const postsData = await Post.findAll({
       where: { user_id: req.session.user_id },
+      include: [{ model: Comment }]
     });
 
     const posts = postsData.map((post) => post.get({ plain: true }));
 
     res.render('dashboard', {
       email: req.session.email,
+      user_id: req.session.user_id,
       posts,
       title: 'Dashboard',
     });
