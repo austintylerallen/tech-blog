@@ -1,39 +1,53 @@
-const path = require('path');
 const express = require('express');
+const { engine } = require('express-handlebars');
+const path = require('path');
 const session = require('express-session');
-const exphbs = require('express-handlebars');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
-
 const sequelize = require('./config/connection');
+require('dotenv').config(); // Add this line to load environment variables
+
 const routes = require('./controllers');
-const helpers = require('./utils/helpers');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
 
-const hbs = exphbs.create({ helpers });
-
-const sess = {
-  secret: process.env.SESSION_SECRET,
-  cookie: {},
-  resave: false,
-  saveUninitialized: true,
-  store: new SequelizeStore({
-    db: sequelize,
-  }),
-};
-
-app.use(session(sess));
-
-app.engine('handlebars', hbs.engine);
+// Set up Handlebars as the view engine
+app.engine('handlebars', engine({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 
+// Middleware to parse JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Set up session middleware
+app.use(session({
+  secret: process.env.SESSION_SECRET, // Use the secret from environment variables
+  resave: false,
+  saveUninitialized: true,
+  store: new SequelizeStore({ db: sequelize }),
+  cookie: { secure: false } // Set to true if using https
+}));
+
+// Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Use the main router for all routes
 app.use(routes);
 
-sequelize.sync({ force: false }).then(() => {
-  app.listen(PORT, () => console.log(`Now listening on port ${PORT}`));
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something went wrong!');
+});
+
+// Handle 404 errors
+app.use((req, res, next) => {
+  res.status(404).send('Sorry, we cannot find that!');
+});
+
+// Set the port for the server
+const PORT = process.env.PORT || 3001;
+
+// Start the server and listen on the specified port
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

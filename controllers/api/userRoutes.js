@@ -1,60 +1,56 @@
-const router = require('express').Router();
+const express = require('express');
+const router = express.Router();
 const { User } = require('../../models');
+const bcrypt = require('bcrypt');
+const db = require('../../db/db');
 
-router.post('/login', async (req, res) => {
-  try {
-    const userData = await User.findOne({ where: { username: req.body.username } });
-
-    if (!userData) {
-      res.status(400).json({ message: 'Incorrect username or password, please try again' });
-      return;
-    }
-
-    const validPassword = await userData.checkPassword(req.body.password);
-
-    if (!validPassword) {
-      res.status(400).json({ message: 'Incorrect username or password, please try again' });
-      return;
-    }
-
-    req.session.save(() => {
-      req.session.user_id = userData.id;
-      req.session.logged_in = true;
-
-      res.json({ user: userData, message: 'You are now logged in!' });
-    });
-
-  } catch (err) {
-    res.status(400).json(err);
-  }
-});
-
+// Route to create a new user
 router.post('/signup', async (req, res) => {
+  const { email, password } = req.body;
   try {
-    const newUser = await User.create({
-      username: req.body.username,
-      password: req.body.password,
-    });
-
-    req.session.save(() => {
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      res.status(400).json({ error: 'Email already exists. Please use a different email.' });
+    } else {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const newUser = await User.create({ email, password: hashedPassword });
       req.session.user_id = newUser.id;
-      req.session.logged_in = true;
-
-      res.json(newUser);
-    });
+      req.session.email = newUser.email;
+      res.status(201).json(newUser);
+    }
   } catch (err) {
-    res.status(400).json(err);
+    console.error('Error creating user:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-router.post('/logout', (req, res) => {
-  if (req.session.logged_in) {
-    req.session.destroy(() => {
-      res.status(204).end();
-    });
-  } else {
-    res.status(404).end();
+// Route to login a user
+router.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ where: { email } });
+    if (user && await bcrypt.compare(password, user.password)) {
+      req.session.user_id = user.id;
+      req.session.email = user.email;
+      res.status(200).json({ message: 'Logged in successfully' });
+    } else {
+      res.status(401).json({ error: 'Invalid email or password' });
+    }
+  } catch (err) {
+    console.error('Error logging in:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
+});
+// Route to get all users
+router.get('/', (req, res) => {
+  db.query('SELECT * FROM users')
+    .then((result) => {
+      res.json(result.rows);
+    })
+    .catch((error) => {
+      console.error('Error getting users:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    });
 });
 
 module.exports = router;

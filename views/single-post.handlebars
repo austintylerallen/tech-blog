@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{post.title}}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>{{post.title}}</h2>
+        <p>{{post.content}}</p>
+        <p><small class="text-muted">Posted by {{post.email}} on {{format_date post.createdAt}}</small></p>
+
+        <h3 class="mt-4">Comments</h3>
+        <ul class="list-group">
+            {{#each post.comments}}
+            <li class="list-group-item">
+                <p>{{this.comment_text}}</p>
+                <small>Commented by {{this.email}} on {{format_date this.createdAt}}</small>
+            </li>
+            {{else}}
+            <li class="list-group-item">No comments yet.</li>
+            {{/each}}
+        </ul>
+
+        {{#if logged_in}}
+        <form id="comment-form" class="mt-4" action="/api/posts/{{post.id}}/comments" method="POST">
+            <div class="form-group">
+                <textarea name="comment_text" class="form-control" placeholder="Add a comment"></textarea>
+            </div>
+            <input type="hidden" name="post_id" value="{{post.id}}">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        {{else}}
+        <p><a href="/login">Log in</a> to add a comment.</p>
+        {{/if}}
+    </div>
+
+    <!-- Bootstrap JS (Optional, if needed) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
