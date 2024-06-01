@@ -2,8 +2,10 @@ const express = require('express');
 const { engine } = require('express-handlebars');
 const path = require('path');
 const session = require('express-session');
-const SequelizeStore = require('connect-session-sequelize')(session.Store); // Add this line
-const sequelize = require('./config/connection'); // Add this line to import your sequelize instance
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const sequelize = require('./config/connection');
+require('dotenv').config(); // Add this line to load environment variables
+
 const routes = require('./controllers');
 
 const app = express();
@@ -18,10 +20,10 @@ app.use(express.urlencoded({ extended: true }));
 
 // Set up session middleware
 app.use(session({
-  secret: '163f4bea10323fc8047e19ad8ccaa0383b1073c43080c053b0ac957e8af02689b4410d5cc6d4984ff91411ca7ecfc84c4f9f8f9816e5bd3295d6667462039f4d',
+  secret: process.env.SESSION_SECRET, // Use the secret from environment variables
   resave: false,
   saveUninitialized: true,
-  store: new SequelizeStore({ db: sequelize }), // Add this line
+  store: new SequelizeStore({ db: sequelize }),
   cookie: { secure: false } // Set to true if using https
 }));
 

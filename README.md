@@ -144,4 +144,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 For any questions or feedback, please reach out to:
 
 - **Email:** austintallen07@gmail.com
-- **GitHub:** [austintylerallen](https://github.com/austintylerallen)
+- **GitHub:** [austintylerallen](https://github.com/austintylerallen)s
