@@ -3,7 +3,7 @@ const router = express.Router();
 const { User, Post, Comment } = require('../models');
 const bcrypt = require('bcrypt');
 
-router.use('/api', require('./api')); // Ensure this line is correct
+router.use('/api', require('./api'));
 router.use('/auth', require('./authRoutes'));
 
 router.get('/', (req, res) => {
