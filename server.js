@@ -21,44 +21,51 @@ app.set('view engine', 'handlebars');
 // Initialize models
 initModels(sequelize);
 
-// Synchronize models
+// Synchronize models and the session store
 sequelize.sync().then(() => {
   console.log('Database synchronized');
-  
+
   // Set up session middleware
-  app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    store: new SequelizeStore({ db: sequelize }),
-    cookie: { secure: false } // Set to true if using https
-  }));
+  const sessionStore = new SequelizeStore({ db: sequelize });
+  sessionStore.sync().then(() => {
+    console.log('Session table synchronized');
 
-  // Serve static files from the 'public' directory
-  app.use(express.static(path.join(__dirname, 'public')));
+    app.use(session({
+      secret: process.env.SESSION_SECRET,
+      resave: false,
+      saveUninitialized: true,
+      store: sessionStore,
+      cookie: { secure: false } // Set to true if using https
+    }));
 
-  // Use the main router for all routes
-  app.use(routes);
+    // Serve static files from the 'public' directory
+    app.use(express.static(path.join(__dirname, 'public')));
 
-  // Error handling middleware
-  app.use((err, req, res, next) => {
-    console.error('Error occurred:', err.stack);
-    if (!res.headersSent) {
-      res.status(500).json({ error: 'Something went wrong!' }); // Ensure JSON response
-    }
-  });
+    // Use the main router for all routes
+    app.use(routes);
 
-  // Handle 404 errors
-  app.use((req, res, next) => {
-    res.status(404).json({ error: 'Sorry, we cannot find that!' }); // Ensure JSON response
-  });
+    // Error handling middleware
+    app.use((err, req, res, next) => {
+      console.error('Error occurred:', err.stack);
+      if (!res.headersSent) {
+        res.status(500).json({ error: 'Something went wrong!' }); // Ensure JSON response
+      }
+    });
 
-  // Set the port for the server
-  const PORT = process.env.PORT || 3001;
+    // Handle 404 errors
+    app.use((req, res, next) => {
+      res.status(404).json({ error: 'Sorry, we cannot find that!' }); // Ensure JSON response
+    });
 
-  // Start the server and listen on the specified port
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    // Set the port for the server
+    const PORT = process.env.PORT || 3001;
+
+    // Start the server and listen on the specified port
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  }).catch(err => {
+    console.error('Failed to synchronize session store:', err);
   });
 }).catch(err => {
   console.error('Failed to synchronize database:', err);
