@@ -10,13 +10,13 @@ const routes = require('./controllers');
 
 const app = express();
 
-// Set up Handlebars as the view engine
-app.engine('handlebars', engine({ defaultLayout: 'main' }));
-app.set('view engine', 'handlebars');
-
 // Middleware to parse JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Set up Handlebars as the view engine
+app.engine('handlebars', engine({ defaultLayout: 'main' }));
+app.set('view engine', 'handlebars');
 
 // Set up session middleware
 app.use(session({
@@ -50,4 +50,24 @@ const PORT = process.env.PORT || 3001;
 // Start the server and listen on the specified port
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+});
+
+// PostgreSQL connection
+const { Pool } = require('pg');
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
+
+// Example route to test the database connection
+app.get('/db-test', (req, res) => {
+  pool.query('SELECT NOW()', (err, result) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.send(result.rows);
+    }
+  });
 });
