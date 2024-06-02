@@ -3,7 +3,7 @@ const { engine } = require('express-handlebars');
 const path = require('path');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
-const sequelize = require('./config/connection'); // Import the sequelize instance
+const sequelize = require('./config/connection'); // Import the consolidated sequelize instance
 require('dotenv').config();
 
 const routes = require('./controllers');
