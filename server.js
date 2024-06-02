@@ -3,7 +3,7 @@ const { engine } = require('express-handlebars');
 const path = require('path');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
-const sequelize = require('./config/connection'); // Import the consolidated sequelize instance
+const sequelize = require('./config/connection'); // Import the sequelize instance
 require('dotenv').config();
 
 const routes = require('./controllers');
@@ -18,40 +18,45 @@ app.use(express.urlencoded({ extended: true }));
 app.engine('handlebars', engine({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 
-// Set up session middleware
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: true,
-  store: new SequelizeStore({ db: sequelize }),
-  cookie: { secure: false } // Set to true if using https
-}));
+// Synchronize models
+sequelize.sync().then(() => {
+  console.log('Database synchronized');
+  
+  // Set up session middleware
+  app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    store: new SequelizeStore({ db: sequelize }),
+    cookie: { secure: false } // Set to true if using https
+  }));
 
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
+  // Serve static files from the 'public' directory
+  app.use(express.static(path.join(__dirname, 'public')));
 
-// Use the main router for all routes
-app.use(routes);
+  // Use the main router for all routes
+  app.use(routes);
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error('Error occurred:', err.stack);
-  if (!res.headersSent) {
-    res.status(500).json({ error: 'Something went wrong!' }); // Ensure JSON response
-  }
-});
+  // Error handling middleware
+  app.use((err, req, res, next) => {
+    console.error('Error occurred:', err.stack);
+    if (!res.headersSent) {
+      res.status(500).json({ error: 'Something went wrong!' }); // Ensure JSON response
+    }
+  });
 
-// Handle 404 errors
-app.use((req, res, next) => {
-  res.status(404).json({ error: 'Sorry, we cannot find that!' }); // Ensure JSON response
-});
+  // Handle 404 errors
+  app.use((req, res, next) => {
+    res.status(404).json({ error: 'Sorry, we cannot find that!' }); // Ensure JSON response
+  });
 
-// Set the port for the server
-const PORT = process.env.PORT || 3001;
+  // Set the port for the server
+  const PORT = process.env.PORT || 3001;
 
-// Start the server and listen on the specified port
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  // Start the server and listen on the specified port
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
 });
 
 // PostgreSQL connection test
