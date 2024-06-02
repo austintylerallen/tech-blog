@@ -21,11 +21,9 @@ app.set('view engine', 'handlebars');
 // Initialize models
 initModels(sequelize);
 
-// Synchronize models and the session store
-sequelize.sync({ force: true }).then(() => { // Use 'force: true' to ensure schema matches models
+// Force synchronize models and the session store
+sequelize.sync({ force: true }).then(() => {
   console.log('Database synchronized');
-  // The rest of your code...
-
 
   // Set up session middleware
   const sessionStore = new SequelizeStore({ db: sequelize });

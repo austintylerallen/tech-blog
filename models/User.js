@@ -22,7 +22,7 @@ User.init(
       validate: {
         isEmail: true
       },
-      field: 'email'
+      field: 'email' // Ensure this matches the column name in your DB
     },
     password: {
       type: DataTypes.STRING,
@@ -30,7 +30,7 @@ User.init(
       validate: {
         len: [8]
       },
-      field: 'password'
+      field: 'password' // Ensure this matches the column name in your DB
     }
   },
   {
@@ -47,7 +47,7 @@ User.init(
     sequelize,
     timestamps: false,
     freezeTableName: true,
-    underscored: false, // Ensure naming convention matches your DB
+    underscored: false,
     modelName: 'user'
   }
 );
