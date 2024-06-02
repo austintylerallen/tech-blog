@@ -42,6 +42,7 @@ router.get('/signup', (req, res) => {
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
+    console.log(`Trying to log in user with email: ${email}`);
     const user = await User.findOne({ where: { email } });
     if (user && await user.checkPassword(password)) {
       req.session.user_id = user.id;
@@ -61,6 +62,7 @@ router.post('/login', async (req, res) => {
 router.post('/signup', async (req, res) => {
   const { email, password } = req.body;
   try {
+    console.log(`Trying to sign up user with email: ${email}`);
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
       res.render('signup', { error: 'Email already exists. Please use a different email.' });

@@ -22,7 +22,7 @@ app.set('view engine', 'handlebars');
 initModels(sequelize);
 
 // Synchronize models and the session store
-sequelize.sync().then(() => {
+sequelize.sync({ alter: true }).then(() => { // Use 'alter: true' to ensure schema matches models
   console.log('Database synchronized');
 
   // Set up session middleware
