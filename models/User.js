@@ -21,14 +21,16 @@ User.init(
       unique: true,
       validate: {
         isEmail: true
-      }
+      },
+      field: 'email'
     },
     password: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
         len: [8]
-      }
+      },
+      field: 'password'
     }
   },
   {
@@ -45,7 +47,7 @@ User.init(
     sequelize,
     timestamps: false,
     freezeTableName: true,
-    underscored: false, // This should match the actual naming convention in your DB
+    underscored: false, // Ensure naming convention matches your DB
     modelName: 'user'
   }
 );
