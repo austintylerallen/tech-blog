@@ -5,7 +5,7 @@ const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const sequelize = require('./config/connection'); // Import the sequelize instance
 require('dotenv').config();
-
+const { initModels } = require('./models'); // Import model initialization
 const routes = require('./controllers');
 
 const app = express();
@@ -17,6 +17,9 @@ app.use(express.urlencoded({ extended: true }));
 // Set up Handlebars as the view engine
 app.engine('handlebars', engine({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
+
+// Initialize models
+initModels(sequelize);
 
 // Synchronize models
 sequelize.sync().then(() => {
@@ -57,6 +60,8 @@ sequelize.sync().then(() => {
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
+}).catch(err => {
+  console.error('Failed to synchronize database:', err);
 });
 
 // PostgreSQL connection test
