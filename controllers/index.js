@@ -46,12 +46,14 @@ router.post('/login', async (req, res) => {
     if (user && await user.checkPassword(password)) {
       req.session.user_id = user.id;
       req.session.email = user.email;
-      res.redirect('/dashboard');
+      req.session.save(() => {
+        res.redirect('/dashboard');
+      });
     } else {
       res.render('login', { error: 'Invalid email or password' });
     }
   } catch (err) {
-    console.error(err);
+    console.error('Error during login:', err);
     res.status(500).json(err);
   }
 });
@@ -67,7 +69,9 @@ router.post('/signup', async (req, res) => {
       const user = await User.create({ email, password: hashedPassword });
       req.session.user_id = user.id;
       req.session.email = user.email;
-      res.redirect('/dashboard');
+      req.session.save(() => {
+        res.redirect('/dashboard');
+      });
     }
   } catch (err) {
     console.error('Error during signup:', err);
