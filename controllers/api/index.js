@@ -22,20 +22,24 @@
 
 const express = require('express');
 const router = express.Router();
+const { createPost, getAllPosts, updatePost, deletePost, getPostById, createComment, getAllComments } = require('../postController');
 
-const postRoutes = require('./postRoutes');
-const commentRoutes = require('./commentRoutes');
-const userRoutes = require('./userRoutes');
+// Define API endpoints for posts
+router.post('/posts', createPost); // Create a new post
+router.get('/posts', getAllPosts); // Retrieve all posts
+router.get('/posts/:postId', getPostById); // Retrieve a single post by ID
+router.put('/posts/:postId', updatePost); // Update a post
+router.delete('/posts/:postId', deletePost); // Delete a post
 
-router.use('/posts', postRoutes); // Routes for handling posts
-router.use('/comments', commentRoutes); // Routes for handling comments
-router.use('/users', userRoutes); // Routes for handling users
-
-router.get('/test', (req, res) => {
-  res.send('API route is working!');
-});
+// Define API endpoints for comments
+router.post('/posts/:postId/comments', createComment); // Create a new comment for a post
+router.get('/posts/:postId/comments', getAllComments); // Retrieve all comments for a post
 
 module.exports = router;
+
+
+
+
 
 
 

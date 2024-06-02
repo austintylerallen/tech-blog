@@ -2,10 +2,9 @@ const express = require('express');
 const router = express.Router();
 const { User, Post, Comment } = require('../models');
 const bcrypt = require('bcrypt');
-const { Op } = require('sequelize');
 
-router.use('/api', require('./api'));
-router.use('/', require('./authRoutes'));
+router.use('/api', require('./api')); // Ensure this line is correct
+router.use('/auth', require('./authRoutes'));
 
 router.get('/', (req, res) => {
   res.render('home', { title: 'Home' });
