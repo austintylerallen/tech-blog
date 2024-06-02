@@ -3,9 +3,9 @@ const { engine } = require('express-handlebars');
 const path = require('path');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
-const sequelize = require('./config/connection'); // Import the sequelize instance
+const sequelize = require('./config/connection');
 require('dotenv').config();
-const { initModels } = require('./models'); // Import model initialization
+const { initModels } = require('./models');
 const routes = require('./controllers');
 
 const app = express();
@@ -48,13 +48,13 @@ sequelize.sync().then(() => {
     app.use((err, req, res, next) => {
       console.error('Error occurred:', err.stack);
       if (!res.headersSent) {
-        res.status(500).json({ error: 'Something went wrong!' }); // Ensure JSON response
+        res.status(500).json({ error: 'Something went wrong!' });
       }
     });
 
     // Handle 404 errors
     app.use((req, res, next) => {
-      res.status(404).json({ error: 'Sorry, we cannot find that!' }); // Ensure JSON response
+      res.status(404).json({ error: 'Sorry, we cannot find that!' });
     });
 
     // Set the port for the server
@@ -76,7 +76,7 @@ const { Pool } = require('pg');
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false // Adjust this setting based on your SSL requirements
+    rejectUnauthorized: false
   }
 });
 
