@@ -45,7 +45,7 @@ User.init(
     sequelize,
     timestamps: false,
     freezeTableName: true,
-    underscored: true,
+    underscored: true, // Ensure this matches your naming convention
     modelName: 'user'
   }
 );
