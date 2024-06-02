@@ -4,7 +4,7 @@ const path = require('path');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const sequelize = require('./config/connection');
-require('dotenv').config(); // Add this line to load environment variables
+require('dotenv').config();
 
 const routes = require('./controllers');
 
@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Set up session middleware
 app.use(session({
-  secret: process.env.SESSION_SECRET, // Use the secret from environment variables
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
   store: new SequelizeStore({ db: sequelize }),
@@ -36,12 +36,12 @@ app.use(routes);
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send('Something went wrong!');
+  res.status(500).json({ error: 'Something went wrong!' }); // Ensure JSON response
 });
 
 // Handle 404 errors
 app.use((req, res, next) => {
-  res.status(404).send('Sorry, we cannot find that!');
+  res.status(404).json({ error: 'Sorry, we cannot find that!' }); // Ensure JSON response
 });
 
 // Set the port for the server

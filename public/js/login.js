@@ -1,3 +1,4 @@
+// public/js/login.js
 document.addEventListener('DOMContentLoaded', () => {
   const loginFormHandler = async (event) => {
     event.preventDefault();
