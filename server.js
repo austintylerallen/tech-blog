@@ -3,20 +3,20 @@ const { engine } = require('express-handlebars');
 const path = require('path');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
-const sequelize = require('./config/connection');
+const sequelize = require('./config/connection'); // Import the consolidated sequelize instance
 require('dotenv').config();
 
 const routes = require('./controllers');
 
 const app = express();
 
-// Set up Handlebars as the view engine
-app.engine('handlebars', engine({ defaultLayout: 'main' }));
-app.set('view engine', 'handlebars');
-
 // Middleware to parse JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Set up Handlebars as the view engine
+app.engine('handlebars', engine({ defaultLayout: 'main' }));
+app.set('view engine', 'handlebars');
 
 // Set up session middleware
 app.use(session({
@@ -35,8 +35,10 @@ app.use(routes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' }); // Ensure JSON response
+  console.error('Error occurred:', err.stack);
+  if (!res.headersSent) {
+    res.status(500).json({ error: 'Something went wrong!' }); // Ensure JSON response
+  }
 });
 
 // Handle 404 errors
@@ -50,4 +52,27 @@ const PORT = process.env.PORT || 3001;
 // Start the server and listen on the specified port
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+});
+
+// PostgreSQL connection test
+const { Pool } = require('pg');
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false // Adjust this setting based on your SSL requirements
+  }
+});
+
+// Example route to test the database connection
+app.get('/db-test', (req, res) => {
+  pool.query('SELECT NOW()', (err, result) => {
+    if (err) {
+      console.error('Database query error:', err);
+      if (!res.headersSent) {
+        res.status(500).send(err);
+      }
+    } else {
+      res.send(result.rows);
+    }
+  });
 });

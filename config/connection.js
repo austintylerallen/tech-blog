@@ -7,7 +7,7 @@ const sequelize = process.env.DATABASE_URL
       dialectOptions: {
         ssl: {
           require: true,
-          rejectUnauthorized: false, // Important for Heroku
+          rejectUnauthorized: false, // Important for Render or Heroku
         },
       },
     })
