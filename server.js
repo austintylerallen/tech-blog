@@ -7,6 +7,7 @@ const sequelize = require('./config/connection');
 require('dotenv').config();
 const { initModels } = require('./models');
 const routes = require('./controllers');
+const authRoutes = require('./controllers/api'); // Correct path to authRoutes.js
 
 const app = express();
 
@@ -21,7 +22,7 @@ app.set('view engine', 'handlebars');
 // Initialize models
 initModels(sequelize);
 
-// Force synchronize models and the session store
+// Synchronize models and the session store
 sequelize.sync({ force: true }).then(() => {
   console.log('Database synchronized');
 
@@ -35,7 +36,7 @@ sequelize.sync({ force: true }).then(() => {
       resave: false,
       saveUninitialized: true,
       store: sessionStore,
-      cookie: { secure: false } // Set to true if using https
+      cookie: { secure: process.env.NODE_ENV === 'production' } // Secure cookies in production
     }));
 
     // Serve static files from the 'public' directory
@@ -43,6 +44,7 @@ sequelize.sync({ force: true }).then(() => {
 
     // Use the main router for all routes
     app.use(routes);
+    app.use(authRoutes); // Use the auth routes
 
     // Error handling middleware
     app.use((err, req, res, next) => {

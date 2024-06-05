@@ -13,25 +13,23 @@ User.init(
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      autoIncrement: true
+      autoIncrement: true,
     },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
       validate: {
-        isEmail: true
+        isEmail: true,
       },
-      field: 'email' // Ensure this matches the column name in your DB
     },
     password: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        len: [8]
+        len: [8],
       },
-      field: 'password' // Ensure this matches the column name in your DB
-    }
+    },
   },
   {
     hooks: {
@@ -42,13 +40,13 @@ User.init(
       beforeUpdate: async (updatedUserData) => {
         updatedUserData.password = await bcrypt.hash(updatedUserData.password, 10);
         return updatedUserData;
-      }
+      },
     },
     sequelize,
-    timestamps: false,
+    timestamps: false, // Ensure timestamps are disabled
     freezeTableName: true,
     underscored: false,
-    modelName: 'user'
+    modelName: 'user',
   }
 );
 

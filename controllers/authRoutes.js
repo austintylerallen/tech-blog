@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { User } = require('../models');
+const { User } = require('../models'); // Adjust the path as necessary
 const bcrypt = require('bcrypt');
 
 router.post('/login', async (req, res) => {
