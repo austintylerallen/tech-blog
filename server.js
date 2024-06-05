@@ -1,10 +1,13 @@
+require('dotenv').config();
+console.log('Database URL:', process.env.DATABASE_URL);
+console.log('Session Secret:', process.env.SESSION_SECRET);
+
 const express = require('express');
 const { engine } = require('express-handlebars');
 const path = require('path');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const sequelize = require('./config/connection');
-require('dotenv').config();
 const { initModels } = require('./models');
 const routes = require('./controllers');
 
