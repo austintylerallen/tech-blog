@@ -1,4 +1,3 @@
-// public/js/login.js
 document.addEventListener('DOMContentLoaded', () => {
   const loginFormHandler = async (event) => {
     event.preventDefault();
@@ -7,16 +6,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const password = document.querySelector('#password-login').value.trim();
 
     if (email && password) {
-      console.log('Login data:', { email, password }); // Debugging log
-      const response = await fetch('/api/users/login', {
+      console.log('Login data:', { email, password });
+      const response = await fetch('/api/users/login', { // Correct endpoint
         method: 'POST',
         body: JSON.stringify({ email, password }),
         headers: { 'Content-Type': 'application/json' },
       });
 
       if (response.ok) {
-        document.location.replace('/dashboard');
+        document.location.replace('/dashboard'); // Redirect to dashboard on success
       } else {
+        const errorText = await response.text();
+        console.error('Failed to log in:', errorText);
         alert('Failed to log in. Incorrect email or password.');
       }
     } else {
