@@ -13,7 +13,7 @@ const sequelize = isProduction
           rejectUnauthorized: false, // This is important for Heroku/Render
         },
       },
-      logging: false,
+      logging: console.log, // Enable logging to see SQL queries
       define: {
         timestamps: false, // Ensure timestamps are globally disabled
       },
@@ -22,7 +22,7 @@ const sequelize = isProduction
       host: process.env.DB_HOST,
       dialect: 'postgres',
       port: process.env.DB_PORT,
-      logging: false,
+      logging: console.log, // Enable logging to see SQL queries
       define: {
         timestamps: false, // Ensure timestamps are globally disabled
       },

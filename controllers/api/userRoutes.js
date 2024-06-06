@@ -14,8 +14,8 @@ router.post('/signup', async (req, res) => {
     } else {
       const hashedPassword = await bcrypt.hash(password, 10);
       const newUser = await User.create({ email, password: hashedPassword });
-      req.session.user_id = newUser.id;
-      req.session.email = newUser.email;
+      // req.session.user_id = newUser.id;
+      // req.session.email = newUser.email;
       res.status(201).json(newUser);
     }
   } catch (err) {
@@ -27,11 +27,12 @@ router.post('/signup', async (req, res) => {
 // Route to login a user
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
+  console.log('Login data:', { email, password });
   try {
     const user = await User.findOne({ where: { email } });
     if (user && await bcrypt.compare(password, user.password)) {
-      req.session.user_id = user.id;
-      req.session.email = user.email;
+      // req.session.user_id = user.id;
+      // req.session.email = user.email;
       res.status(200).json({ message: 'Logged in successfully' });
     } else {
       res.status(401).json({ error: 'Invalid email or password' });

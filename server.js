@@ -3,30 +3,26 @@ const { engine } = require('express-handlebars');
 const path = require('path');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
-const sequelize = require('./config/connection');
+const sequelize = require('./config/connection'); // Ensure this points to your updated connection file
 require('dotenv').config();
 const { initModels } = require('./models');
 const routes = require('./controllers');
-const authRoutes = require('./controllers/api'); // Correct path to authRoutes.js
+const authRoutes = require('./controllers/authRoutes'); // Ensure correct path
+const dashboardRoutes = require('./controllers/dashboardRoutes'); // Ensure correct path
 
 const app = express();
 
-// Middleware to parse JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Set up Handlebars as the view engine
 app.engine('handlebars', engine({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 
-// Initialize models
 initModels(sequelize);
 
-// Synchronize models and the session store
 sequelize.sync({ force: true }).then(() => {
   console.log('Database synchronized');
 
-  // Set up session middleware
   const sessionStore = new SequelizeStore({ db: sequelize });
   sessionStore.sync().then(() => {
     console.log('Session table synchronized');
@@ -36,17 +32,20 @@ sequelize.sync({ force: true }).then(() => {
       resave: false,
       saveUninitialized: true,
       store: sessionStore,
-      cookie: { secure: process.env.NODE_ENV === 'production' } // Secure cookies in production
+      cookie: { secure: process.env.NODE_ENV === 'production' }
     }));
 
-    // Serve static files from the 'public' directory
+    app.use((req, res, next) => {
+      console.log('Session details:', req.session);
+      next();
+    });
+
     app.use(express.static(path.join(__dirname, 'public')));
 
-    // Use the main router for all routes
+    app.use('/api/users', authRoutes); // Correct base URL for auth routes
+    app.use('/dashboard', dashboardRoutes); // Ensure the base URL is correct
     app.use(routes);
-    app.use(authRoutes); // Use the auth routes
 
-    // Error handling middleware
     app.use((err, req, res, next) => {
       console.error('Error occurred:', err.stack);
       if (!res.headersSent) {
@@ -54,15 +53,11 @@ sequelize.sync({ force: true }).then(() => {
       }
     });
 
-    // Handle 404 errors
     app.use((req, res, next) => {
       res.status(404).json({ error: 'Sorry, we cannot find that!' });
     });
 
-    // Set the port for the server
-    const PORT = process.env.PORT || 3001;
-
-    // Start the server and listen on the specified port
+    const PORT = process.env.PORT || 10000;
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
@@ -73,16 +68,12 @@ sequelize.sync({ force: true }).then(() => {
   console.error('Failed to synchronize database:', err);
 });
 
-// PostgreSQL connection test
 const { Pool } = require('pg');
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
+  ssl: { rejectUnauthorized: false }
 });
 
-// Example route to test the database connection
 app.get('/db-test', (req, res) => {
   pool.query('SELECT NOW()', (err, result) => {
     if (err) {

@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize'); // Add this line
+const { DataTypes } = require('sequelize');
 const User = require('./User');
 const Post = require('./Post');
 const Comment = require('./Comment');
